@@ -1,11 +1,28 @@
+"Barycentric Triangle Module"
+
+"""
+Includes three (3) functions:
+
+Find_points sets the location for the weighted point inside the triangle.
+
+	find_points(weights, left_base[x,y], right_base[x,y], top[x,y])
+
+---
+
+Point_in__triangle checks to see if the weighted point falls within the bounds of the triangle.
+
+	point_in_triangle(p[x,y], a[x,y], b[x,y], c[x,y])
+
+---
+
+Plot_triangle plots the triangle and the specified point inside.
+
+	plot_triangle(point[x,y], weights([a, b, c]), width, height, border)
+
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
-
-# Model Weights
-wa = 0.7 # analyitical
-wd = 0.1 #data-driven
-wp = 0.2 # physical
-model_weights = [wa, wd, wp]
 
 def find_point(weights, left_base, right_base, top):
     """
@@ -86,17 +103,18 @@ def plot_triangle(point = " ", weights=([1/3, 1/3, 1/3]), width = 800, height = 
     
                 image[y, x] = color
 
-    point = find_point(model_weights, green_point, blue_point, red_point)
+    point = find_point(weights, green_point, blue_point, red_point)
     
     # Display result
     plt.figure(figsize=(8, 7))
     plt.scatter(point[0], point[1])
-    plt.text(green_point[0], green_point[1], 'Analytical', ha='left', va='bottom')
+    plt.text(green_point[0], green_point[1], 'Physical', ha='left', va='bottom')
     plt.text(blue_point[0], blue_point[1], 'Data-Driven', ha='right', va='bottom')
-    plt.text(red_point[0], red_point[1], 'Physical', ha='center', va='top')
+    plt.text(red_point[0], red_point[1], 'Analytical', ha='center', va='top')
     plt.imshow(image)      
     plt.axis("off")
-    
 
-plot_triangle()
-#plt.savefig("./plot.png")
+if __name__ == "__main__":
+
+	plot_triangle()
+	plt.savefig("./plot.png")
