@@ -1,39 +1,24 @@
-"Barycentric Triangle Module"
-
-"""
-Includes three (3) functions:
-
-Find_points sets the location for the weighted point inside the triangle.
-
-	find_points(weights, left_base[x,y], right_base[x,y], top[x,y])
-
----
-
-Point_in__triangle checks to see if the weighted point falls within the bounds of the triangle.
-
-	point_in_triangle(p[x,y], a[x,y], b[x,y], c[x,y])
-
----
-
-Plot_triangle plots the triangle and the specified point inside.
-
-	plot_triangle(point[x,y], weights([a, b, c]), width, height, border)
-
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
+
 
 def find_point(weights, left_base, right_base, top):
     """
     Input weights and triangle vertices
     Return weighted point
     """
-    if weights[0] + weights[1] + weights[2] == 1 and weights[0] + weights[1] + weights[2] >= 0:
-        xp = weights[0] * left_base[0] + weights[1] * right_base[0] + weights[2] * top[0]
-        yp = weights[0] * left_base[1] + weights[1] * right_base[1] + weights[2] * top[1]
+    if (
+        weights[0] + weights[1] + weights[2] == 1
+        and weights[0] + weights[1] + weights[2] >= 0
+    ):
+        xp = (
+            weights[0] * left_base[0] + weights[1] * right_base[0] + weights[2] * top[0]
+        )
+        yp = (
+            weights[0] * left_base[1] + weights[1] * right_base[1] + weights[2] * top[1]
+        )
 
-    return (xp,yp)
+    return (xp, yp)
 
 
 def point_in_triangle(p, a, b, c):
@@ -58,14 +43,16 @@ def point_in_triangle(p, a, b, c):
 
     return (u >= 0) and (v >= 0) and (u + v <= 1)
 
-def plot_triangle(point = " ", weights=([1/3, 1/3, 1/3]), width = 800, height = 700, border = 150):
 
+def plot_triangle(
+    point=" ", weights=([1 / 3, 1 / 3, 1 / 3]), width=800, height=700, border=150
+):
     # Create empty RGB image initialized to white
-    image = np.ones((height, width, 3), dtype = float)
+    image = np.ones((height, width, 3), dtype=float)
 
-    red_point = np.array([width / 2, border]) # top
-    green_point = np.array([border, height - border]) # bottom left
-    blue_point = np.array([width - border, height - border]) # bottom left
+    red_point = np.array([width / 2, border])  # top
+    green_point = np.array([border, height - border])  # bottom left
+    blue_point = np.array([width - border, height - border])  # bottom left
 
     # Maximum possible distance inside triangle
     max_dist = max(
@@ -73,48 +60,41 @@ def plot_triangle(point = " ", weights=([1/3, 1/3, 1/3]), width = 800, height = 
         np.linalg.norm(red_point - blue_point),
         np.linalg.norm(green_point - blue_point),
     )
-    
+
     # Loop through every pixel
     for y in range(height):
         for x in range(width):
-    
             p = np.array([x, y])
-    
-            if point_in_triangle(
-                p,
-                red_point,
-                green_point,
-                blue_point
-            ):
-    
+
+            if point_in_triangle(p, red_point, green_point, blue_point):
                 d_red = np.linalg.norm(p - red_point)
                 d_green = np.linalg.norm(p - green_point)
                 d_blue = np.linalg.norm(p - blue_point)
-    
+
                 # Convert distances into "closeness"
                 r = 1.0 - d_red / max_dist
                 g = 1.0 - d_green / max_dist
                 b = 1.0 - d_blue / max_dist
-    
+
                 color = np.array([r, g, b])
-    
+
                 # Normalize so colors remain vivid
                 color /= color.max()
-    
+
                 image[y, x] = color
 
     point = find_point(weights, green_point, blue_point, red_point)
-    
+
     # Display result
     plt.figure(figsize=(8, 7))
     plt.scatter(point[0], point[1])
-    plt.text(green_point[0], green_point[1], 'Physical', ha='left', va='bottom')
-    plt.text(blue_point[0], blue_point[1], 'Data-Driven', ha='right', va='bottom')
-    plt.text(red_point[0], red_point[1], 'Analytical', ha='center', va='top')
-    plt.imshow(image)      
+    plt.text(green_point[0], green_point[1], "Physical", ha="left", va="bottom")
+    plt.text(blue_point[0], blue_point[1], "Data-Driven", ha="right", va="bottom")
+    plt.text(red_point[0], red_point[1], "Analytical", ha="center", va="top")
+    plt.imshow(image)
     plt.axis("off")
 
-if __name__ == "__main__":
 
-	plot_triangle()
-	plt.savefig("./plot.png")
+if __name__ == "__main__":
+    plot_triangle()
+    plt.savefig("./plot.png")
